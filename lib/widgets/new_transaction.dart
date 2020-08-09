@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import '../models/transaction.dart';
 
 class NewTransaction extends StatefulWidget {
-
   final Function newTx;
   final Function clearAllTx;
   final List<Transaction> tx;
@@ -20,41 +19,39 @@ class _NewTransactionState extends State<NewTransaction> {
   DateTime _selectedDate;
   bool redText;
 
-  void submitData(){
+  void submitData() {
     final String enteredItem = _itemController.text;
     final double enteredPrice = double.parse(_priceController.text);
 
-    if (_selectedDate == null){
+    if (_selectedDate == null) {
       setState(() {
         redText = true;
       });
     }
-  
-    if (enteredItem.isEmpty || enteredPrice <= 0 || _selectedDate == null){
+
+    if (enteredItem.isEmpty || enteredPrice <= 0 || _selectedDate == null) {
       return;
     }
 
-    widget.newTx(
-      _itemController.text, 
-      double.parse(_priceController.text), 
-      _selectedDate);
+    widget.newTx(_itemController.text, double.parse(_priceController.text),
+        _selectedDate);
     Navigator.of(context).pop();
     print(redText);
   }
 
-  void _clearData(){
+  void _clearData() {
     widget.clearAllTx();
     Navigator.of(context).pop();
   }
 
-  void _presentDatePicker(){
+  void _presentDatePicker() {
     showDatePicker(
-      context: context, 
-      initialDate: DateTime.now(), 
-      firstDate: DateTime(2020), 
-      lastDate: DateTime.now()
-    ).then((datePicked) {
-      if (datePicked == null){
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2020),
+            lastDate: DateTime.now())
+        .then((datePicked) {
+      if (datePicked == null) {
         return;
       }
       setState(() {
@@ -64,60 +61,72 @@ class _NewTransactionState extends State<NewTransaction> {
     });
   }
 
-  bool _isClearButtonEnabled(){
+  bool _isClearButtonEnabled() {
     return widget.tx.isEmpty ? false : true;
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Card(
-         elevation: 5,
-         child: Container(
-           padding: EdgeInsets.all(10),
-           child: Column(
-             children: <Widget>[
-               TextField(
+      height: 500,
+        child: SingleChildScrollView(
+                  child: Card(
+                    elevation: 0,
+      child: Container(
+          padding: EdgeInsets.only(
+            top: 10,
+            left: 10,
+            right: 10,
+            bottom: MediaQuery.of(context).viewInsets.bottom
+          ),
+          child: Column(
+            children: <Widget>[
+              TextField(
                 decoration: InputDecoration(labelText: "Item"),
                 controller: _itemController,
                 onSubmitted: (_) => submitData,
-                  ),
-               TextField(
-                  decoration: InputDecoration(labelText: "Amount"),
-                  controller: _priceController,
-                  keyboardType: TextInputType.numberWithOptions(decimal:true),
-                  onSubmitted: (_) => submitData,
-               ),
-               Text(
-                  _selectedDate == null ? 
-                  "Please choose a date" : 
-                  DateFormat('MM-dd-y').format(_selectedDate),
-                  style: TextStyle(
-                    fontWeight: redText == null ? FontWeight.normal : FontWeight.bold,
-                    color: redText == null ? Colors.black : Colors.red[600]
-                  ),
-               ),
-               Row(
-                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                 children: <Widget>[
-                   FlatButton(
+              ),
+              TextField(
+                decoration: InputDecoration(labelText: "Amount"),
+                controller: _priceController,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                onSubmitted: (_) => submitData,
+              ),
+              Text(
+                _selectedDate == null
+                    ? "Please choose a date"
+                    : DateFormat('MM-dd-y').format(_selectedDate),
+                style: TextStyle(
+                    fontWeight:
+                        redText == null ? FontWeight.normal : FontWeight.bold,
+                    color: redText == null ? Colors.black : Colors.red[600]),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  FlatButton(
                     child: Text("Clear Transations"),
                     textColor: Colors.red[600],
                     // add clearAllTx();
-                    onPressed: _isClearButtonEnabled() ? () => {_clearData()} : null, 
+                    onPressed:
+                        _isClearButtonEnabled() ? () => {_clearData()} : null,
                   ),
-                   IconButton(icon: Icon(Icons.calendar_today), onPressed: _presentDatePicker),
-                   FlatButton(
-                     child: Text("Add Transation"),
-                     textColor: Theme.of(context).primaryColor,
-                     onPressed: () {submitData();},
-                    ),
-                 ],
-               ),
-             ],
-            ),
-         ),
-        )
-    );
+                  IconButton(
+                      icon: Icon(Icons.calendar_today),
+                      onPressed: _presentDatePicker),
+                  FlatButton(
+                    child: Text("Add Transation"),
+                    textColor: Theme.of(context).primaryColor,
+                    onPressed: () {
+                      submitData();
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+      ),
+    ),
+        ));
   }
 }

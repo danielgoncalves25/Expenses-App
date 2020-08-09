@@ -22,7 +22,7 @@ class Chart extends StatelessWidget {
         }
       }
       return {
-        "day": DateFormat.E().format(weekDay), 
+        "day": DateFormat.E().format(weekDay).substring(0,1), 
         "price": totalSum
       };
     }).reversed.toList();
@@ -37,10 +37,7 @@ class Chart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //print(groupedTransactions);
-    return Column(
-      children: <Widget>[
-        Text("Weekly Spendings"),
-        Card(
+    return Card(
           elevation: 5,
           margin: EdgeInsets.only(left: 20, right: 20, top: 5),
           child: Padding(
@@ -58,8 +55,6 @@ class Chart extends StatelessWidget {
               }).toList(),
             ),
           ),
-        ),
-      ],
-    );
+        );
   }
 }
